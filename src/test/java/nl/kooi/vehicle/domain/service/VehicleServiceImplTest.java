@@ -54,25 +54,6 @@ class VehicleServiceImplTest {
     }
 
     @Test
-    void findByLicenseNumber_found() {
-        when(repository.findVehicleEntityByLicensePlateLicenseNumber(anyString())).thenReturn(Optional.of(getVehicleEntityWithId(1L)));
-
-        var result = assertDoesNotThrow(() -> service.findByLicenseNumber("12"));
-
-        assertVehicle(result);
-    }
-
-    @Test
-    void findByLicenseNumber_notFound() {
-        when(repository.findVehicleEntityByLicensePlateLicenseNumber(anyString())).thenReturn(Optional.empty());
-
-        var message = assertThrows(NotFoundException.class, () -> service.findByLicenseNumber("1")).getMessage();
-
-        assertThat(message).isEqualTo("Vehicle with licensenumber 1 not found");
-    }
-
-
-    @Test
     void saveVehicle() {
         when(repository.existsVehicleEntityByLicensePlateLicenseNumber(anyString())).thenReturn(false);
         when(repository.save(any(VehicleEntity.class))).thenReturn(getVehicleEntityWithId(1L));

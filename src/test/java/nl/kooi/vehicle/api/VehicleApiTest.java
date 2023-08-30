@@ -6,7 +6,6 @@ import nl.kooi.vehicle.api.dto.VehicleDTO;
 import nl.kooi.vehicle.domain.LicensePlate;
 import nl.kooi.vehicle.domain.Vehicle;
 import nl.kooi.vehicle.domain.service.VehicleService;
-import nl.kooi.vehicle.domain.service.VehicleServiceImpl;
 import nl.kooi.vehicle.exception.NotFoundException;
 import nl.kooi.vehicle.exception.VehicleException;
 import nl.kooi.vehicle.mapper.VehicleMapperImpl;
@@ -31,7 +30,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest({VehicleApi.class, ControllerAdvice.class})
-@Import({VehicleServiceImpl.class, VehicleMapperImpl.class})
+@Import(VehicleMapperImpl.class)
 class VehicleApiTest {
 
     @Autowired
@@ -77,21 +76,6 @@ class VehicleApiTest {
     }
 
     @Test
-    void findVehicleByLicenseNumber() throws Exception {
-        when(vehicleService.findByLicenseNumber(anyString())).thenReturn(createVehicleWithId(1L));
-
-        var jsonString = mockMvc.perform(get("/vehicles/search?license-number=12345"))
-                .andExpect(status().isOk())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
-
-        var dto = objectMapper.readValue(jsonString, VehicleDTO.class);
-
-        assertBaseVehicleWithId(dto, 1L);
-    }
-
-    @Test
     void getAllVehicles_vehiclesExist() throws Exception {
         when(vehicleService.getAllVehicles())
                 .thenReturn(List.of(createVehicleWithId(1L), createVehicleWithId(2L)));
@@ -103,6 +87,28 @@ class VehicleApiTest {
                 .getResponse()
                 .getContentAsString();
 
+
+        var typeRef = new TypeReference<List<VehicleDTO>>() {
+        };
+
+        var list = objectMapper.readValue(jsonString, typeRef);
+
+        assertThat(list).hasSize(2);
+
+        assertBaseVehicleWithId(list.get(0), 1L);
+        assertBaseVehicleWithId(list.get(1), 2L);
+    }
+
+    @Test
+    void getAllVehiclesOfExplicitType() throws Exception {
+        when(vehicleService.getAllVehiclesByType(CAR))
+                .thenReturn(List.of(createVehicleWithId(1L), createVehicleWithId(2L)));
+
+        var jsonString = mockMvc.perform(get("/vehicles?vehicleType=CAR"))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
 
         var typeRef = new TypeReference<List<VehicleDTO>>() {
         };

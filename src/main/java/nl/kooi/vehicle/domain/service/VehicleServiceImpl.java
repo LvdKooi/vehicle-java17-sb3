@@ -3,6 +3,7 @@ package nl.kooi.vehicle.domain.service;
 
 import lombok.RequiredArgsConstructor;
 import nl.kooi.vehicle.domain.Vehicle;
+import nl.kooi.vehicle.enums.VehicleType;
 import nl.kooi.vehicle.exception.NotFoundException;
 import nl.kooi.vehicle.exception.VehicleException;
 import nl.kooi.vehicle.infra.VehicleRepository;
@@ -27,6 +28,11 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     @Override
+    public List<Vehicle> getAllVehiclesByType(VehicleType vehicleType) {
+        return repository.findVehicleEntityByVehicleType(vehicleType).stream().map(mapper::map).toList();
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public Vehicle getVehicleById(Long id) {
         return repository
@@ -37,12 +43,16 @@ public class VehicleServiceImpl implements VehicleService {
 
     @Override
     public Vehicle saveVehicle(Vehicle vehicle) {
-        if (!repository.existsVehicleEntityByLicensePlateLicenseNumber(vehicle.licensePlate().licenseNumber())) {
+        if (!isLicenseNumberAlreadyPresent(vehicle.licensePlate().licenseNumber())) {
             var entity = mapper.mapToEntity(vehicle);
             return mapper.map(repository.save(entity));
         } else {
             throw new VehicleException(String.format("Vehicle with licenseNumber %s already exists", vehicle.licensePlate().licenseNumber()));
         }
+    }
+
+    private boolean isLicenseNumberAlreadyPresent(String licenseNumber) {
+        return repository.existsVehicleEntityByLicensePlateLicenseNumber(licenseNumber);
     }
 
     @Override
@@ -57,13 +67,5 @@ public class VehicleServiceImpl implements VehicleService {
     public void deleteVehicleById(Long id) {
         getVehicleById(id);
         repository.deleteById(id);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Vehicle findByLicenseNumber(String licenseNumber) {
-        return repository.findVehicleEntityByLicensePlateLicenseNumber(licenseNumber)
-                .map(mapper::map)
-                .orElseThrow(() -> new NotFoundException(String.format("Vehicle with licensenumber %s not found", licenseNumber)));
     }
 }

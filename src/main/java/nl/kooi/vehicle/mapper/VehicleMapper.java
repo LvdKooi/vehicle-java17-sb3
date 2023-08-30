@@ -6,7 +6,6 @@ import nl.kooi.vehicle.domain.LicensePlate;
 import nl.kooi.vehicle.domain.Vehicle;
 import nl.kooi.vehicle.infra.entity.LicensePlateEntity;
 import nl.kooi.vehicle.infra.entity.VehicleEntity;
-import org.mapstruct.Context;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
