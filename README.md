@@ -1,5 +1,5 @@
 # vehicle-java17-sb3
-A repo which I use to teach Java 17 and Spring Boot 3
+A repo which I use for instructing Java 17 and Spring Boot 3
 
 ## Running the application
 Before running the application, make sure to do a Maven ```clean verify```. After a successful build, run the application by hitting the play button in IntelliJ from the VehicleApplication.java file.
