@@ -2,7 +2,7 @@
 A repo which I use to teach Java 17 and Spring Boot 3
 
 ## Running the application
-Run the application by hitting the play button in the VehicleApplication.java file from IntelliJ.
+Before running the application, make sure to do a Maven ```clean verify```. After a successful build, run the application by hitting the play button in IntelliJ from the VehicleApplication.java file.
 
 When the application is running, API documentation is available at [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html).
 
@@ -19,7 +19,7 @@ Please note that this JDBC url changes each time you (re)start the application. 
 * Creating Java Records
 * Looking at Java's Exception Framework, creating a custom RuntimeException
 * Spring Beans and Dependency Injection in Spring, using different types of stereotypes (```@Component```, ```@Service```, ```@Controller```, ```@Repository```)
-* Test slicing targeting different layers of our application (using ```@WebMvcTest``` for the controller, ```@DataJpa``` for the repository, ```@SpringJUnitConfig``` for any other bean)
+* Test slicing targeting different layers of our application (using ```@WebMvcTest``` for the controller, ```@DataJpaTest``` for the repository, ```@SpringJUnitConfig``` for any other bean)
 * Generating mapping methods using MapStruct
 * Creating entities and custom methods using Hibernate
 * Creating database migrations using FlyWay
